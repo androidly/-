@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>小番茄图片混淆修改版 (WASM加速)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+  tailwind.config = {
+    darkMode: 'class' // 关键配置
+  };
+</script>
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="css/style.css">
+   
+</head>
+<body class="font-sans antialiased">
+    <div class="app-container">
+        <!-- 顶部标题栏 -->
+        <div class="px-1 py-1 flex items-center justify-between border-b border-[var(--border-color)] flex-shrink-0">
+          <!-- 标题部分 - 允许挤压 -->
+            <h1 class="text-base font-semibold text-[var(--text-color)] truncate flex-1 min-w-0 mr-1">小番茄图片混淆批量zip版</h1>     
+                <!-- 操作按钮容器 - 不压缩 -->
+            <div class="flex items-center flex-none gap-1">
+            
+            <!-- 齿轮按钮和下拉菜单 -->
+        <div class="relative">
+            <button id="settings-toggle" class="p-2 rounded-full text-[var(--text-secondary)] hover:bg-gray-100 dark:hover:bg-gray-700 active:scale-90 transition-transform">
+                <i class="fas fa-cog"></i>
+            </button>
+            <!-- 下拉菜单 -->
+            <div id="settings-dropdown" class="absolute right-0 mt-1 w-48 rounded-md shadow-lg bg-[var(--card-color)] border border-[var(--border-color)] z-50 hidden py-1">
+    
+                <a href="#" data-modal="help" class="menu-item block px-4 py-2 text-sm text-[var(--text-color)] hover:bg-[var(--primary-color)] hover:text-white">
+                    <i class="fas fa-question-circle mr-2"></i>帮助
+                </a>
+                <a href="#" data-modal="about" class="menu-item block px-4 py-2 text-sm text-[var(--text-color)] hover:bg-[var(--primary-color)] hover:text-white">
+                    <i class="fas fa-info-circle mr-2"></i>关于
+                </a>
+                
+                <div class="my-1 border-t border-[var(--border-color)]"></div>
+                <a href="/index" rel="noopener noreferrer" class="menu-item block px-4 py-2 text-sm text-[var(--text-color)] hover:bg-[var(--primary-color)] hover:text-white">
+                    <i class="fas fa-book mr-2"></i>默认版</a>
+                <a href="/delay" rel="noopener noreferrer" class="menu-item block px-4 py-2 text-sm text-[var(--text-color)] hover:bg-[var(--primary-color)] hover:text-white"> <i class="fas fa-book mr-2"></i>延迟下载版</a>
+                
+                <a href="/app" rel="noopener noreferrer" class="menu-item block px-4 py-2 text-sm text-[var(--text-color)] hover:bg-[var(--primary-color)] hover:text-white"> <i class="fas fa-book mr-2"></i>图片混淆APP</a>
+            </div>
+        </div>
+            </div>
+            <button id="theme-toggle" class="p-2 rounded-full text-[var(--text-secondary)] hover:bg-gray-100 dark:hover:bg-gray-700 active:scale-90 transition-transform">
+                <i class="fas fa-moon dark:hidden"></i>
+                <i class="fas fa-sun hidden dark:block"></i>
+            </button>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="flex-1 overflow-y-auto p-3">
+            <!-- 状态提示 -->
+            <div id="description-text" class="status-base status-info">
+                基于空间填充曲线的新一代图片混淆。混淆算法保持像素的空间相关性，混淆图被压缩仍能保持色彩。仅供技术交流使用。
+            </div>
+
+            <!-- 图片信息 和 清除按钮区域 - 新的父容器 -->
+            <div class="flex justify-between items-center mb-2">
+                <!-- 图片信息 -->
+                <div id="info-container" class="text-sm" style="display: none;">
+                    <span id="filename-info" class="font-medium text-[var(--text-color)]"></span>
+                    <span id="resolution-info" class="block text-xs text-[var(--text-secondary)]"></span>
+                </div>
+                <!-- 清除按钮区域 -->
+                <div id="clear-buttons-container" class="flex gap-2" style="display: none;">
+                    <button id="clear-current" class="btn-danger text-xs px-3 py-1 rounded-md flex items-center justify-center disabled:btn-disabled active:scale-95 transition-transform">
+                         <i class="fas fa-trash-alt text-[10px] mr-1"></i>清除
+                     </button>
+                     <button id="clear-all" class="btn-danger text-xs px-3 py-1 rounded-md flex items-center justify-center disabled:btn-disabled active:scale-95 transition-transform">
+                         <i class="fas fa-broom text-[10px] mr-1"></i>清除全部
+                     </button>
+                </div>
+            </div>
+
+
+            <!-- 图片显示区域 -->
+            <div class="image-container relative w-full flex justify-center items-center rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 min-h-[150px] border border-[var(--border-color)] shadow-inner">
+                <div id="empty-state" class="text-center py-6 text-[var(--text-secondary)]">
+                    <i class="fas fa-image fa-2x mb-2 opacity-50"></i>
+                    <p class="text-xs">请选择图片开始处理（可多选）</p>
+                </div>
+                <img id="display-img" class="max-w-full max-h-[calc(100vh-300px)] object-contain block" style="display: none;" /> <!-- 调整 max-h, 预留更多空间给固定导航 -->
+                <!-- 全局加载指示器覆盖层 -->
+                 <div id="global-loading-overlay" class="absolute inset-0 bg-black bg-opacity-20 dark:bg-opacity-40 flex items-center justify-center hidden z-10">
+                     <div class="w-8 h-8 border-4 border-t-transparent border-white rounded-full animate-spin"></div> <!-- 加载动画 -->
+                 </div>
+            </div>
+        </div> <!-- 主内容区结束 -->
+
+        <!-- 导航控制 (移到主内容区外部，工具栏上方) -->
+        <div id="navigation-controls" class="flex justify-between items-center px-3 mb-1" style="display: none;">
+             <button id="prev" class="btn-nav text-xs px-3 py-1.5 rounded-full disabled:btn-disabled active:scale-95 transition-transform">
+                 <i class="fas fa-chevron-left mr-1"></i>上一张
+             </button>
+             <div class="text-center text-xs font-medium text-[var(--text-secondary)]">
+                 <span id="image-count-info"></span>
+                 <span id="global-status" class="ml-2 text-[10px]"></span> <!-- 增加了处理时间显示 -->
+                 <span id="processing-time-info" class="ml-2 text-[10px]"></span>
+             </div>
+             <button id="next" class="btn-nav text-xs px-3 py-1.5 rounded-full disabled:btn-disabled active:scale-95 transition-transform">
+                 下一张<i class="fas fa-chevron-right ml-1"></i>
+             </button>
+        </div>
+
+        <!-- 底部工具栏 -->
+        <div class="toolbar p-1.5 flex-shrink-0">
+             <div class="flex justify-around items-center gap-1">
+                 <!-- 操作按钮组 1: Encrypt -->
+                 <div class="flex flex-col items-center gap-1">
+                     <button id="enc" class="btn-encrypt w-[70px] h-8 text-[11px] rounded-md flex items-center justify-center disabled:btn-disabled active:scale-95 transition-transform">
+                         <i class="fas fa-lock text-[10px] mr-1"></i>混淆
+                     </button>
+                     <button id="enc-all" class="btn-encrypt w-[70px] h-7 text-[10px] rounded-md flex items-center justify-center disabled:btn-disabled active:scale-95 transition-transform">
+                          <i class="fas fa-lock text-[9px] mr-1"></i>全部
+                     </button>
+                 </div>
+                 <!-- 操作按钮组 2: Decrypt -->
+                 <div class="flex flex-col items-center gap-1">
+                     <button id="dec" class="btn-decrypt w-[70px] h-8 text-[11px] rounded-md flex items-center justify-center disabled:btn-disabled active:scale-95 transition-transform">
+                         <i class="fas fa-unlock text-[10px] mr-1"></i>解混淆
+                     </button>
+                     <button id="dec-all" class="btn-decrypt w-[70px] h-7 text-[10px] rounded-md flex items-center justify-center disabled:btn-disabled active:scale-95 transition-transform">
+                          <i class="fas fa-unlock text-[9px] mr-1"></i>全部
+                     </button>
+                 </div>
+                 <!-- 上传按钮 -->
+                 <div class="flex-shrink-0 mx-1">
+                    <button id="upload-btn" class="w-11 h-11 rounded-full btn-upload flex items-center justify-center text-white shadow-md relative overflow-hidden disabled:btn-disabled active:scale-95 transition-transform">
+                        <i class="fas fa-plus text-lg"></i>
+                        <!-- 透明的 Input 层覆盖按钮，触发文件选择 -->
+                        <input type="file" accept="image/*" id="ipt" multiple class="absolute inset-0 opacity-0 cursor-pointer" />
+                    </button>
+                 </div>
+                 <!-- 操作按钮组 3: oreore -->
+                 <div class="flex flex-col items-center gap-1">
+                     <button id="re" class="btn-restore w-[70px] h-8 text-[11px] rounded-md flex items-center justify-center disabled:btn-disabled active:scale-95 transition-transform">
+                         <i class="fas fa-undo text-[10px] mr-1"></i>还原
+                     </button>
+                     <button id="restore-all" class="btn-restore w-[70px] h-7 text-[10px] rounded-md flex items-center justify-center disabled:btn-disabled active:scale-95 transition-transform">
+                          <i class="fas fa-undo text-[9px] mr-1"></i>全部
+                     </button>
+                 </div>
+                 <!-- 操作按钮组 4: Download -->
+                 <div class="flex flex-col items-center gap-1">
+                     <button id="download" class="btn-download w-[70px] h-8 text-[11px] rounded-md flex items-center justify-center disabled:btn-disabled active:scale-95 transition-transform">
+                         <i class="fas fa-download text-[10px] mr-1"></i>保存
+                     </button>
+                     <button id="download-all" class="btn-download w-[70px] h-7 text-[10px] rounded-md flex items-center justify-center disabled:btn-disabled active:scale-95 transition-transform">
+                          <i class="fas fa-download text-[9px] mr-1"></i>全部
+                     </button>
+                 </div>
+             </div>
+        </div>
+    </div>
+    
+    <img src="https://profile-counter.glitch.me/fqt/count.svg" alt="Visitor Counter Preload" style="display:none; width:1px; height:1px;" aria-hidden="true" />
+
+ <!-- 弹窗结构 -->
+    <div id="custom-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4 border border-gray-200 dark:border-gray-700">
+            <h3 id="modal-title" class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">标题</h3>
+            <div id="modal-content" class="text-gray-700 dark:text-gray-300 mb-6">内容加载中...</div>
+            <button id="modal-close" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md w-full">确定</button>
+        </div>
+    </div>
+
+    <!-- WASM 初始化模块 -->
+    <script type="module">
+        import init, { wasm_encrypt, wasm_decrypt } from './fqt.js'; 
+
+        // 将 wasmReady 等变量暴露给后续的非模块脚本
+        window.wasmReady = false;
+        window.wasmError = null;
+        window.wasm_encrypt_global = null; // 将WASM函数挂载到window
+        window.wasm_decrypt_global = null;
+
+        const appDescriptionElement = document.getElementById('description-text'); // 修改变量名以避免与函数参数冲突
+
+        async function initializeWasm() {
+            try {
+                await init(); 
+                window.wasmReady = true;
+                window.wasm_encrypt_global = wasm_encrypt;
+                window.wasm_decrypt_global = wasm_decrypt;
+                console.log("WASM模块已成功初始化。");
+                if (appDescriptionElement) {
+                    appDescriptionElement.textContent = "WASM模块已加载。处理将优先使用WASM。";
+                    appDescriptionElement.className = 'status-base status-info'; // 使用你定义的样式
+                }
+            } catch (error) {
+                window.wasmError = error;
+                window.wasmReady = false;
+                console.error("WASM模块初始化失败:", error);
+                if (appDescriptionElement) {
+                    appDescriptionElement.textContent = `警告：WASM模块加载失败 (${error.message || '未知错误'})。已自动回退到纯JS版本进行处理。纯JS版本性能可能较低。`;
+                    appDescriptionElement.className = 'status-base status-warning'; // 使用警告样式
+                }
+            }
+        }
+
+        // 页面加载时自动初始化WASM
+        // 确保在DOM元素（如description-text）可用后再调用
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeWasm);
+        } else {
+            initializeWasm(); // DOMContentLoaded 已触发
+        }
+    </script>
+
+<script src ="js/gilbert2d.js"> </script>
+<script src="/js/zip.js"> </script>
+<script src="js/themes.js"> </script>
+</body>
+</html>

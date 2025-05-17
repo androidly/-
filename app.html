@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>番茄图片混淆APP - 下载</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Swiper JS for Carousel -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <!-- Font Awesome (可选, 用于图标) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Anime.js for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5; /* 淡灰色背景 */
+            color: #333;
+            padding-bottom: 80px; /* 为固定底栏预留空间 */
+        }
+        .app-header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        /* --- Swiper Styles --- */
+        .swiper-container {
+            position: relative; /* 确保 pagination 相对于此容器定位 */
+            width: 100%;
+            height: 300px; /* 稍微减小一点高度，可以根据图片调整 */
+            border-radius: 0.5rem; /* 与 section-card 一致的圆角 */
+            overflow: hidden; /* 确保子元素不溢出圆角 */
+        }
+        .swiper-slide img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* contain 会留白边，cover 会裁剪但填满 */
+        }
+        .swiper-pagination {
+            /* Swiper 默认会尝试正确定位，如果还有问题，可以取消下面的注释并调整 */
+            /* position: absolute; */
+            /* bottom: 10px !important; */ /* 使用 !important 强制覆盖，但尽量避免 */
+            /* left: 50%; */
+            /* transform: translateX(-50%); */
+        }
+        .swiper-pagination-bullet {
+            background-color: #cbd5e1; /* Tailwind gray-300 for inactive bullets */
+            opacity: 0.8;
+        }
+        .swiper-pagination-bullet-active {
+            background-color: #3b82f6 !important; /* Tailwind blue-500 for active bullet */
+            opacity: 1;
+        }
+        /* --- End Swiper Styles --- */
+
+        .section-card {
+            background-color: #ffffff;
+            border-radius: 0.5rem; /* 8px */
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            margin-bottom: 1rem; /* 16px */
+            padding: 1rem; /* 16px */
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr; /* 标签和值 */
+            gap: 0.5rem 1rem; /* 行间距 列间距 */
+            align-items: center;
+        }
+        .info-grid dt {
+            font-weight: 500;
+            color: #555;
+        }
+        .info-grid dd {
+            color: #333;
+            word-break: break-all; /* 防止长包名溢出 */
+        }
+
+        /* 固定底部下载栏样式 */
+        .fixed-download-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #ffffff; /* 白色背景 */
+            padding: 0.75rem 1rem; /* 12px 16px */
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.1); /* 顶部阴影 */
+            z-index: 100; /* 确保在最上层 */
+            display: flex;
+            gap: 0.5rem; /* 按钮之间的间隙 8px */
+        }
+        .fixed-download-bar .download-btn-fixed {
+            flex-grow: 1; /* 让按钮平均分配空间 */
+            text-align: center;
+            padding: 0.6rem 0.5rem;
+            font-size: 0.8rem;
+            border-radius: 0.375rem; /* 6px */
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 56px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .fixed-download-bar .download-btn-fixed i {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+        .fixed-download-bar .download-btn-fixed:hover {
+            transform: translateY(-1px);
+        }
+        .fixed-download-bar .download-btn-fixed.bg-blue-500:hover { background-color: #2563eb; }
+        .fixed-download-bar .download-btn-fixed.bg-green-500:hover { background-color: #16a34a; }
+        .fixed-download-bar .download-btn-fixed.bg-purple-500:hover { background-color: #7e22ce; }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="max-w-2xl mx-auto">
+
+        <header class="app-header p-2 text-center sticky top-0 z-50">
+            <h1 class="text-2xl font-bold text-gray-800">番茄图片混淆APP下载</h1>
+        </header>
+
+        <main class="p-4">
+            <section class="section-card mb-6">
+                <!-- Swiper -->
+                <div class="swiper-container"> <!-- 确保这个容器有 position: relative; (已在 style 中添加) -->
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide"><img src="image/1.png" alt="应用截图 1"></div>
+                        <div class="swiper-slide"><img src="image/2.png" alt="应用截图 2"></div>
+                        <div class="swiper-slide"><img src="image/3.png" alt="应用截图 3"></div>
+                    </div>
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination"></div>
+                </div>
+            </section>
+
+            <section class="section-card mb-6">
+                <div id="basic-info-header" class="flex justify-between items-center cursor-pointer py-1">
+                    <h2 class="text-xl font-semibold text-gray-700">基本信息</h2>
+                    <i id="basic-info-toggle-icon" class="fas fa-chevron-down text-gray-500"></i> <!-- 移除 transform 和 transition，交由 anime.js -->
+                </div>
+                <dl id="basic-info-content" class="info-grid text-sm mt-3"> <!-- 添加 mt-3 给展开后一点上边距 -->
+                    <dt><i class="fas fa-mobile-alt mr-1 text-gray-500"></i>应用名称:</dt>
+                    <dd id="app-name">番茄图片混淆</dd>
+                    <dt><i class="fas fa-tag mr-1 text-gray-500"></i>当前版本:</dt>
+                    <dd id="app-version">1.5</dd>
+                    <dt><i class="fas fa-calendar-alt mr-1 text-gray-500"></i>更新时间:</dt>
+                    <dd id="upload-time">2025-05-15</dd> <!-- 修正日期格式 -->
+                    <dt><i class="fas fa-hdd mr-1 text-gray-500"></i>软件大小:</dt>
+                    <dd id="app-size">约 197 KB</dd>
+                    <dt><i class="fas fa-box-open mr-1 text-gray-500"></i>包名:</dt>
+                    <dd id="package-name">io.github.fqt</dd>
+                </dl>
+            </section>
+
+            <section class="section-card">
+                <h2 class="text-xl font-semibold text-gray-700 mb-3">软件详情</h2>
+                <div id="app-description" class="text-sm text-gray-600 leading-relaxed space-y-2">
+                    <p>本应用是一款基于空间填充曲线理论的图片处理工具，旨在提供一种新颖的图片混淆与解混淆方案。通过独特的算法，使得图片在经过处理和压缩后，仍能较大程度地保持其原有的色彩信息和视觉关联性。</p>
+                    <p>主要功能包括：</p>
+                    <ul class="list-disc list-inside pl-4 text-gray-500 space-y-1">
+                        <li>多种混淆算法选择：Gilbert曲线、块置乱、像素置乱等。</li>
+                        <li>批量处理：支持同时对多张图片进行混淆或解混淆操作。</li>
+                        <li>密钥支持：部分算法支持使用密钥增加处理的安全性。</li>
+                        <li>图片管理：方便地添加、预览、还原和保存处理后的图片。</li>
+                    </ul>
+                    <p class="mt-3">设计目标是为技术研究和学习提供一个有趣的工具，探索图片数据在不同变换下的特性。请合理使用，勿用于非法用途。</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center py-6 text-sm text-gray-500">
+            <p>© <span id="current-year"></span><a href="index.html"> 然而他</a> </p> <!-- 链接到 index.html 或你的主页 -->
+            <img src="https://profile-counter.glitch.me/fqt-download/count.svg" alt="Page Visits" class="inline-block h-5 mt-2"/>
+        </footer>
+    </div>
+
+    <div class="fixed-download-bar">
+        <a href="apk/番茄图片混淆v1.5_arm64-v8a.apk" download="小番茄图片处理-手机版.apk"
+           class="download-btn-fixed bg-blue-500">
+            <i class="fas fa-mobile-alt"></i>
+            <span>手机版</span>
+        </a>
+        <a href="apk/番茄图片混淆v1.5_x86_64.apk" download="小番茄图片处理-模拟器版.apk"
+           class="download-btn-fixed bg-green-500">
+            <i class="fas fa-desktop"></i>
+            <span>模拟器版</span>
+        </a>
+        <a href="apk/番茄图片混淆v1.5_all.apk" download="小番茄图片处理-通用版.apk"
+           class="download-btn-fixed bg-purple-500">
+            <i class="fas fa-globe"></i>
+            <span>通用版</span>
+        </a>
+    </div>
+
+    <script>
+        // 初始化 Swiper
+        var swiper = new Swiper('.swiper-container', {
+            loop: true,
+            autoplay: {
+                delay: 3000, // 调整自动播放延迟
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            // 如果需要导航按钮 (左右箭头)
+            // navigation: {
+            //   nextEl: '.swiper-button-next',
+            //   prevEl: '.swiper-button-prev',
+            // },
+        });
+
+        // 设置当前年份
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // 基本信息折叠/展开逻辑 - 使用 Anime.js
+        const basicInfoHeader = document.getElementById('basic-info-header');
+        const basicInfoContent = document.getElementById('basic-info-content');
+        const basicInfoToggleIcon = document.getElementById('basic-info-toggle-icon');
+        let isBasicInfoExpanded = false; // 初始状态为折叠
+
+        if (basicInfoHeader && basicInfoContent && basicInfoToggleIcon) {
+            // 初始化样式，确保内容最初是 "折叠" 状态但可计算高度
+            basicInfoContent.style.overflow = 'hidden';
+            basicInfoContent.style.maxHeight = "0px";
+            basicInfoContent.style.opacity = "0";
+            basicInfoContent.style.marginTop = "0px"; // 初始无上边距
+            // basicInfoContent.style.display = 'none'; // 由 anime.js 控制
+
+            // 图标的旋转由 anime.js 控制，所以移除这里的 CSS transition 和 transform
+            // basicInfoToggleIcon.style.transition = 'transform 0.35s ease-out'; // (可选，如果anime.js只控制内容)
+
+            basicInfoHeader.addEventListener('click', () => {
+                isBasicInfoExpanded = !isBasicInfoExpanded;
+
+                if (isBasicInfoExpanded) {
+                    // 展开动画
+                    basicInfoContent.style.display = 'grid'; // 先设为 grid 以计算高度
+                    const scrollHeight = basicInfoContent.scrollHeight;
+
+                    anime({
+                        targets: basicInfoContent,
+                        maxHeight: [0, scrollHeight + 'px'],
+                        opacity: [0, 1],
+                        marginTop: ['0px', '0.75rem'], // 展开时添加上边距 (12px)
+                        duration: 350,
+                        easing: 'easeOutCubic', // 可以尝试不同的缓动函数
+                        begin: function() {
+                             basicInfoContent.style.display = 'grid'; // 确保在动画开始时是 grid
+                        }
+                    });
+                    anime({
+                        targets: basicInfoToggleIcon,
+                        rotate: '180deg',
+                        duration: 350,
+                        easing: 'easeOutCubic'
+                    });
+                } else {
+                    // 折叠动画
+                    anime({
+                        targets: basicInfoContent,
+                        maxHeight: 0,
+                        opacity: 0,
+                        marginTop: '0px', // 折叠时移除上边距
+                        duration: 350,
+                        easing: 'easeOutCubic',
+                        complete: function() {
+                            // 可选: 动画完成后设为 display: none
+                            // if (!isBasicInfoExpanded) basicInfoContent.style.display = 'none';
+                        }
+                    });
+                    anime({
+                        targets: basicInfoToggleIcon,
+                        rotate: '0deg',
+                        duration: 350,
+                        easing: 'easeOutCubic'
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+</html>

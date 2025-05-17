@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>页面不存在 - 404</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden; /* 防止动画元素在初始状态溢出 */
+        }
+        
+        .dark body { /* 注意：这个选择器应该作用于 <html> 元素，而不是 <body> 嵌套 */
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+            color: #f0f0f0;
+        }
+        /* 更正暗黑模式选择器 */
+        html.dark body {
+            background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+            color: #f0f0f0;
+        }
+        
+        .container {
+            max-width: 100%;
+            width: 100%;
+            padding: 20px;
+            /* 移除 CSS fadeIn，由 anime.js 控制 */
+        }
+        
+        .error-code {
+            font-size: 6rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #4a6ee0;
+            line-height: 1;
+            /* 为 anime.js 准备：将数字拆分成 span */
+            display: inline-block; /* 使 span 可以并排 */
+        }
+        .error-code .char { /* anime.js 会给每个字符添加这个类 */
+            display: inline-block;
+            opacity: 0; /* 初始不可见 */
+        }
+        
+        html.dark .error-code {
+            color: #6b8cff;
+        }
+        
+        .error-message {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            font-weight: 500;
+            opacity: 0; /* 初始不可见，由 anime.js 控制 */
+        }
+        
+        .description {
+            font-size: 1rem;
+            margin-bottom: 40px;
+            max-width: 500px;
+            opacity: 0; /* 初始不可见 */
+            line-height: 1.6;
+        }
+        
+        .home-button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #4a6ee0;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease-out; /* 保留 hover 的 CSS 过渡 */
+            box-shadow: 0 4px 15px rgba(74, 110, 224, 0.3);
+            margin-bottom: 30px;
+            opacity: 0; /* 初始不可见 */
+        }
+        
+        html.dark .home-button {
+            background-color: #6b8cff;
+            box-shadow: 0 4px 15px rgba(107, 140, 255, 0.3);
+        }
+        
+        .home-button:hover {
+            transform: translateY(-3px) scale(1.03); /* 增强 hover 效果 */
+            box-shadow: 0 6px 20px rgba(74, 110, 224, 0.4);
+        }
+        
+        html.dark .home-button:hover {
+            box-shadow: 0 6px 20px rgba(107, 140, 255, 0.4);
+        }
+        
+        .countdown-text { /* 重命名以区分 span#countdown */
+            font-size: 0.9rem;
+            opacity: 0; /* 初始不可见 */
+            margin-top: 20px;
+        }
+        
+        .animation-container { /* 重命名，与 .animation CSS 类区分 */
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 30px;
+            position: relative;
+            opacity: 0; /* 初始不可见 */
+        }
+        
+        .circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 8px solid rgba(74, 110, 224, 0.2);
+            border-radius: 50%;
+            border-top-color: #4a6ee0;
+            animation: spin 1.5s linear infinite; /* 保留 CSS spin */
+        }
+        
+        html.dark .circle {
+            border: 8px solid rgba(107, 140, 255, 0.2);
+            border-top-color: #6b8cff;
+        }
+        
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* 移除 CSS fadeIn，因为 anime.js 会处理更复杂的入场 */
+        
+        @media (max-width: 480px) {
+            .error-code { font-size: 4rem; }
+            .error-message { font-size: 1.2rem; }
+            .description { font-size: 0.9rem; }
+            .animation-container { width: 100px; height: 100px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="animation-container"> <!-- 重命名 class -->
+            <div class="circle"></div>
+        </div>
+        
+        <h1 class="error-code" id="animated-error-code">404</h1> <!-- 添加 ID -->
+        <h2 class="error-message" id="animated-error-message">页面不存在</h2> <!-- 添加 ID -->
+        <p class="description" id="animated-description">
+            抱歉，您访问的页面不存在或已被移除。<br>
+            系统将在 <span id="countdown">3</span> 秒后自动跳转到首页。
+        </p>
+        
+        <a href="/index.html" class="home-button" id="animated-home-button"> <!-- 确保链接到实际首页，添加 ID -->
+            <i class="fas fa-home mr-2"></i>立即返回首页
+        </a>
+        
+        <p class="countdown-text" id="animated-countdown-text">或者等待自动跳转...</p> <!-- 重命名 class, 添加 ID -->
+    </div>
+
+    <script>
+        // 倒计时和跳转功能
+        let seconds = 3;
+        const countdownElement = document.getElementById('countdown');
+        const countdownInterval = setInterval(() => {
+            seconds--;
+            if (countdownElement) countdownElement.textContent = seconds;
+            
+            if (seconds <= 0) {
+                clearInterval(countdownInterval);
+                window.location.href = '/index.html'; // 确保链接到实际首页
+            }
+        }, 1000);
+        
+        // 暗黑模式检测和切换
+        const htmlElement = document.documentElement;
+        function applyTheme(isDark) {
+            if (isDark) {
+                htmlElement.classList.add('dark');
+            } else {
+                htmlElement.classList.remove('dark');
+            }
+        }
+        // 初始主题
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const storedTheme = localStorage.getItem('theme'); // (如果你有主题切换功能)
+        if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+            applyTheme(true);
+        } else {
+            applyTheme(false);
+        }
+        // 监听系统主题变化
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            applyTheme(e.matches);
+        });
+
+        // Anime.js 动画
+        document.addEventListener('DOMContentLoaded', () => {
+            const errorCodeEl = document.getElementById('animated-error-code');
+            const errorMessageEl = document.getElementById('animated-error-message');
+            const descriptionEl = document.getElementById('animated-description');
+            const homeButtonEl = document.getElementById('animated-home-button');
+            const countdownTextEl = document.getElementById('animated-countdown-text');
+            const animationContainerEl = document.querySelector('.animation-container');
+
+            // 准备错误码动画：将数字包裹在 span 中
+            if (errorCodeEl) {
+                errorCodeEl.innerHTML = errorCodeEl.textContent.replace(/\S/g, "<span class='char'>$&</span>");
+            }
+            
+            const tl = anime.timeline({
+                easing: 'easeOutExpo', // 默认缓动
+                duration: 750 // 默认时长
+            });
+
+            tl
+            .add({
+                targets: animationContainerEl,
+                opacity: [0, 1],
+                scale: [0.5, 1],
+                translateY: [-30, 0],
+                duration: 600,
+            })
+            .add({
+                targets: '.error-code .char',
+                opacity: [0,1],
+                translateY: ["1.1em", 0],
+                translateX: ["0.5em", 0],
+                translateZ: 0,
+                rotateZ: [180, 0],
+                duration: 750,
+                delay: anime.stagger(100) // 每个字符延迟 100ms
+            }, '-=200') // 相对于上一个动画结束前提早 200ms 开始
+            .add({
+                targets: errorMessageEl,
+                opacity: [0,1],
+                translateY: [20,0],
+                duration: 500,
+            }, '-=400') // 进一步调整偏移
+            .add({
+                targets: descriptionEl,
+                opacity: [0,1],
+                translateY: [20,0],
+                duration: 500,
+            }, '-=300')
+            .add({
+                targets: homeButtonEl,
+                opacity: [0,1],
+                translateY: [20,0],
+                scale: [0.8, 1],
+                duration: 500,
+            }, '-=300')
+            .add({
+                targets: countdownTextEl,
+                opacity: [0,1],
+                translateY: [20,0],
+                duration: 400,
+            }, '-=250');
+        });
+    </script>
+</body>
+</html>
