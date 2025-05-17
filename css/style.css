@@ -1,0 +1,197 @@
+ /* CSS 变量定义，用于主题切换 */
+        :root {
+            --primary-color: #7c3aed;    /* 主要颜色 (上传按钮) */
+            --secondary-color: #6c757d; /* 次要颜色 (导航按钮) */
+            --accent-color: #ec4899;    /* 强调色 (解混淆) */
+            --success-color: #10b981;   /* 成功色 (下载) */
+            --warning-color: #f59e0b;   /* 警告色 (还原) */
+            --danger-color: #ef4444;    /* 危险色 (清除) */
+            --encrypt-color: #4f46e5;   /* 加密色 */
+            --bg-color: #f8fafc;        /* 背景色 */
+            --card-color: #ffffff;      /* 卡片背景色 */
+            --text-color: #1e293b;      /* 主要文本色 */
+            --text-secondary: #64748b;  /* 次要文本色 */
+            --border-color: #e2e8f0;    /* 边框色 */
+        }
+
+        .dark { /* 深色模式下的颜色变量 */
+            --primary-color: #8b5cf6;
+            --secondary-color: #9ca3af;
+            --accent-color: #f472b6;
+            --success-color: #34d399;
+            --warning-color: #fbbf24;
+            --danger-color: #f87171;
+            --encrypt-color: #6366f1;
+            --bg-color: #0f172a;
+            --card-color: #1e293b;
+            --text-color: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
+        }
+
+        .app-container {
+            max-width: 500px;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            background-color: var(--bg-color);
+        }
+
+        .image-container { /* 图片容器滚动条样式 (可选) */
+            scrollbar-width: thin;
+            scrollbar-color: var(--text-secondary) transparent;
+               min-height: 250px;
+    height: 60vh; /* 视口高度的65% */
+        }
+        .image-container::-webkit-scrollbar { width: 4px; height: 4px; }
+        .image-container::-webkit-scrollbar-track { background: transparent; }
+        .image-container::-webkit-scrollbar-thumb { background-color: var(--text-secondary); border-radius: 2px; }
+
+        /* 基础按钮颜色类 */
+        .btn-upload { background-color: var(--primary-color); color: white; }
+        .btn-encrypt { background-color: var(--encrypt-color); color: white; }
+        .btn-decrypt { background-color: var(--accent-color); color: white; }
+        .btn-restore { background-color: var(--warning-color); color: white; }
+        .btn-download { background-color: var(--success-color); color: white; }
+        .btn-danger { background-color: var(--danger-color); color: white; } /* 清除按钮颜色 */
+        .btn-nav { background-color: var(--secondary-color); color: white; }
+
+        /* 禁用按钮样式 */
+        .btn-disabled {
+            background-color: #e2e8f0 !important; /* 强制覆盖 Tailwind */
+            color: #94a3b8 !important;
+            cursor: not-allowed !important;
+            opacity: 0.6 !important;
+            box-shadow: none !important;
+        }
+        .dark .btn-disabled {
+            background-color: #334155 !important;
+            color: #64748b !important;
+        }
+
+        /* 底部工具栏模糊背景 */
+        .toolbar {
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.55);
+            border-top: 1px solid var(--border-color);
+        }
+        .dark .toolbar {
+            background-color: rgba(30, 41, 59, 0.85);
+        }
+
+        /* 卡片样式 */
+        .card {
+            background-color: var(--card-color);
+            border-radius: 8px; /* 稍微减小圆角 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* 更柔和的阴影 */
+            border: 1px solid var(--border-color);
+        }
+
+
+         /* 在现有样式基础上添加 */
+:root {
+    --status-bar-margin: 0.1rem; /* 定义变量方便调整 */
+}
+
+.status-base {
+    margin: var(--status-bar-margin) 0 !important; /* 覆盖默认外边距 */
+    padding: 0.5rem 0.75rem;
+}
+
+/* 调整主内容容器 */
+.app-container > div:nth-child(2) {  /* 选择第二个div（主内容区） */
+    padding-top: 0 !important;
+}
+
+        /* 状态提示条样式 */
+        .status-base {
+            padding: 0.3rem 0.55rem; /* 调整内边距 */
+            
+            margin-bottom: 0.15rem; /* 调整外边距 */
+            font-size: 0.775rem;
+            border-left-width: 4px;
+            border-radius: 0 6px 6px 0;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+        .status-info { background-color: rgba(59, 130, 246, 0.1); border-left-color: var(--primary-color); color: #2563eb; }
+        .dark .status-info { background-color: rgba(96, 165, 250, 0.15); color: #93c5fd; }
+        .status-success { background-color: rgba(16, 185, 129, 0.1); border-left-color: var(--success-color); color: #059669; }
+        .dark .status-success { background-color: rgba(52, 211, 153, 0.15); color: #6ee7b7; }
+        .status-warning { background-color: rgba(245, 158, 11, 0.1); border-left-color: var(--warning-color); color: #d97706; }
+        .dark .status-warning { background-color: rgba(251, 191, 36, 0.15); color: #fcd34d; }
+        .status-error { background-color: rgba(239, 68, 68, 0.1); border-left-color: var(--danger-color); color: #dc2626; }
+        .dark .status-error { background-color: rgba(248, 113, 113, 0.15); color: #fca5a5; }
+
+
+/* 下拉菜单动画 */
+#settings-dropdown {
+    transform-origin: top right;
+    transform: scale(0.95);
+    opacity: 0;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+#settings-dropdown.show {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: auto;
+    display: block !important;
+}
+
+/* 下拉菜单项悬停效果 */
+#settings-dropdown a {
+    transition: all 0.2s ease;
+}
+
+/* 确保标题栏不会换行 */
+.app-container header {
+    overflow: hidden;
+}
+
+/* 标题文本截断 */
+.app-container h1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 弹窗动画效果 */
+#modal { /* Note: This ID is not used for the custom modal, but kept for potential generic modal styling */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+#modal.show {
+    opacity: 1;
+    pointer-events: auto;
+    display: flex !important;
+}
+
+/* 弹窗样式 */
+#custom-modal {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+#custom-modal:not(.hidden) { /* Use :not(.hidden) to show when hidden class is removed */
+    opacity: 1;
+    pointer-events: auto;
+    display: flex;
+}
+
+#custom-modal > div { /* Modal content animation */
+    transform: translateY(20px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+#custom-modal:not(.hidden) > div {
+    transform: translateY(0);
+}
